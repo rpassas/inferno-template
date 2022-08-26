@@ -1,20 +1,29 @@
-require_relative 'inferno_template/patient_group'
+require_relative 'inferno_template/separate_validators'
+require_relative 'inferno_template/one_validator'
 
 module InfernoTemplate
   class Suite < Inferno::TestSuite
     id :test_suite_template
-    title 'Inferno Test Suite Template'
-    description 'A basic test suite template for Inferno'
+    title 'Inferno + HL7 Validator Demo Suite'
+    description 'A basic test suite for Inferno'
 
     # This input will be available to all tests in this suite
-    input :url
+    input :fhir_url
+    #input :http_url
+    #ENV.fetch('VALIDATOR_URL')
 
     # All FHIR requests in this suite will use this FHIR client
-    fhir_client do
-      url :url
+    fhir_client :fhir_client do
+      url :fhir_url
+    end
+
+    http_client do
+      #url "localhost:8082"
+      url ENV.fetch('VALIDATOR_URL')
     end
 
     # Tests and TestGroups can be defined inline
+    """
     group do
       id :capability_statement
       title 'Capability Statement'
@@ -33,9 +42,10 @@ module InfernoTemplate
         end
       end
     end
-
+    """
     # Tests and TestGroups can be written in separate files and then included
     # using their id
-    group from: :patient_group
+    group from: :separate_validators
+    group from: :one_validator
   end
 end
