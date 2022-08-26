@@ -2,10 +2,10 @@ module InfernoTemplate
     class PatientGroup < Inferno::TestGroup
       title 'Patient Demo Tests'
       description 'Verify that the server makes Patient resources available'
-      id :separate_validator
-      core = ['hl7.fhir.us.core#4.0.0']
-      ips = ['hl7.fhir.uv.ips#1.0.0']
-      base = ['hl7.fhir.r4.core#4.0.1']
+      id :patient_group
+      core = 'hl7.fhir.us.core#4.0.0'
+      ips = 'hl7.fhir.uv.ips#1.0.0'
+      base = 'hl7.fhir.r4.core#4.0.1'
       
       validator do
         url ENV.fetch('VALIDATOR_URL')
@@ -99,12 +99,10 @@ module InfernoTemplate
           assert_valid_resource(resource: :patient, profile_url: "http://hl7.org/fhir/uv/ips/StructureDefinition/Patient-uv-ips")
           assert_response_status(200)
         end
-
         run do
             post('defaultIg', body: ips)
           end
       end
-
     end
   end
   

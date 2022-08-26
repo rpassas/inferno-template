@@ -2,11 +2,9 @@ module InfernoTemplate
   class PatientGroup < Inferno::TestGroup
     title 'Patient Demo Tests'
     description 'Verify that the server makes Patient resources available'
-    id :separate_validators
-    core = ['hl7.fhir.us.core#4.0.0']
-    ips = ['hl7.fhir.uv.ips#1.0.0']
-    base = ['hl7.fhir.r4.core#4.0.1']
-    
+    id :one_validator
+    igs = ['hl7.fhir.us.core#4.0.0', 'hl7.fhir.uv.ips#1.0.0', 'hl7.fhir.r4.core#4.0.1']
+
     validator do
       url ENV.fetch('VALIDATOR_URL')
       exclude_message { |message| message.type == 'info' }
@@ -18,9 +16,7 @@ module InfernoTemplate
         Requests to the validator will load required IG's into separated validator instances.
       )
       run do
-        post('defaultIg', body: core)
-        post('defaultIg', body: ips)
-        post('defaultIg', body: base)
+        post('defaultIg', body: igs)
       end
     end
 
@@ -58,10 +54,6 @@ module InfernoTemplate
         assert_valid_resource()
         assert_response_status(200)
       end
-
-      run do
-        post('defaultIg', body: base)
-      end
     end
 
 
@@ -79,10 +71,6 @@ module InfernoTemplate
         assert_valid_resource(profile_url: "http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient")
         assert_response_status(200)
       end
-
-      run do
-        post('defaultIg', body: core)
-      end
     end
 
     test do
@@ -96,13 +84,12 @@ module InfernoTemplate
 
       run do
         assert_resource_type(:patient)
-        assert_valid_resource(resource: :patient, profile_url: "http://hl7.org/fhir/uv/ips/StructureDefinition/Patient-uv-ips", ig_url: ips)
+        assert_valid_resource(resource: :patient, profile_url: "http://hl7.org/fhir/uv/ips/StructureDefinition/Patient-uv-ips")
         assert_response_status(200)
       end
     end
   end
 end
-
 
 
 

@@ -45,6 +45,7 @@ module InfernoTemplate
     """
     # Tests and TestGroups can be written in separate files and then included
     # using their id
+    group from: :patient_group
     group from: :separate_validators
     group from: :one_validator
   end
